@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Card App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .flash-card-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 600px;
+        }
+        .topic-heading {
+            font-size: 20px; /* Adjust the size as needed */
+            font-weight: bold;
+            margin-bottom: 10px; /* Space between the topic heading and the question */
+            color: #333; /* Dark grey color, change as needed */
+        }
+
+        .flash-card {
+            width: 450px;
+            height: 600px;
+            background-color: #f0f0f0;
+            border: 1px solid #000;
+            border-radius: 10px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-right: 2px dotted green;
+            border-left: 2px solid black;
+        }
+
+        .flash-card.active {
+            display: flex;
+        }
+
+        .flash-card:hover {
+            background-color: #e0e0e0;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="flash-card-container">
+    <button onclick="showPrev()">Previous</button>
+
+    {% for topic_list in qa_data %}
+        {% for qa_topic in topic_list %}
+            <div class="flash-card" onmouseover="revealAnswer(this)" onmouseout="hideAnswer(this)">
+                <div class="topic-heading">{{ qa_topic["topic"] }}</div>
+                <div class="question">{{ qa_topic["trigger"] }}</div>
+                <div class="answer">{{ qa_topic["explanation"] }}</div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <button onclick="showNext()">Next</button>
+</div>
+
+<script>
+    let currentCard = 0;
+    const flashCards = document.querySelectorAll('.flash-card');
+
+    function revealAnswer(card) {
+        card.getElementsByClassName('answer')[0].style.display = 'block';
+    }
+
+    function hideAnswer(card) {
+        card.getElementsByClassName('answer')[0].style.display = 'none';
+    }
+
+    function showCard(index) {
+        flashCards.forEach((card, i) => {
+            card.classList.toggle('active', i === index);
+        });
+    }
+
+    function showPrev() {
+        currentCard = Math.max(0, currentCard - 1);
+        showCard(currentCard);
+    }
+
+    function showNext() {
+        currentCard = Math.min(flashCards.length - 1, currentCard + 1);
+        showCard(currentCard);
+    }
+
+    // Show the first card initially
+    showCard(currentCard);
+</script>
+
+</body>
+</html>
